@@ -18,6 +18,7 @@ insert into orders_data values(1,131,'USA','Texas');
 insert into orders_data values(6,142,'USA','Texas');
 insert into orders_data values(7,150,'USA','Texas');
 
+--Example for GROUP_CONCAT
 select 
   country,
   count(*) as total_orders,
@@ -62,9 +63,11 @@ insert into payment
   (211.65, '2020.02.02',1),
   (1500.73, '2021.01.06',3);
 
+-- Example for ROLLUP
 select sum(payment_amount),
   year(payment_date) as 'Payment Year',
   store_id as 'Store'
 from payment 
 group by year(payment_date), store_id with ROLLUP
+
 order by year(payment_date), store_id;
