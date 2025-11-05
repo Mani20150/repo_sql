@@ -1,1 +1,1 @@
-This section has samples of rare sql statements.
+Samples of rare sql statements.
