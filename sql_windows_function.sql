@@ -107,7 +107,7 @@ Output:
 | 2022-03-16 |       500.00 |        1000.00 |
 +------------+--------------+----------------+
 
-mysql> select *, sum(sales_amount) over (order by sales_date rows between 1 preceding and current row) as prev_plus_next_sales_sum from daily_sales;
+select *, sum(sales_amount) over (order by sales_date rows between 1 preceding and current row) as prev_plus_next_sales_sum from daily_sales;
 Output:
 +------------+--------------+--------------------------+
 | sales_date | sales_amount | prev_plus_next_sales_sum |
@@ -171,3 +171,10 @@ Output:
 | 2022-03-15 |       500.00 |                  2800.00 |
 | 2022-03-16 |       500.00 |                  2800.00 |
 +------------+--------------+--------------------------+
+
+insert into daily_sales values ('2022-03-20',900);
+insert into daily_sales values ('2022-03-23',200);
+insert into daily_sales values ('2022-03-25',300);
+insert into daily_sales values ('2022-03-29',250);
+
+select *, sum(sales_amount) over(order by sales_date range between interval '6' day preceding and current row) as running_weekly_sales from daily_sales;
