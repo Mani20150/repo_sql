@@ -18,13 +18,21 @@ insert into orders_data values(1,131,'USA','Texas');
 insert into orders_data values(6,142,'USA','Texas');
 insert into orders_data values(7,150,'USA','Texas');
 
---Example for GROUP_CONCAT
 select 
   country,
   count(*) as total_orders,
   GROUP_CONCAT(state) as list_of_states
 from orders_data
 group by country;
+
+Output:
++---------+--------------+-----------------------------------------------+
+| country | total_orders | list_of_states                                |
++---------+--------------+-----------------------------------------------+
+| INDIA   |            4 | UP,Bihar,AP,Goa                               |
+| UK      |            1 | London                                        |
+| USA     |            6 | Texas,Washington,Washington,Texas,Texas,Texas |
++---------+--------------+-----------------------------------------------+
 
 select 
   country,
@@ -33,12 +41,30 @@ select
 from orders_data
 group by country;
 
+Output:
++---------+--------------+------------------+
+| country | total_orders | list_of_states   |
++---------+--------------+------------------+
+| INDIA   |            4 | AP,Bihar,Goa,UP  |
+| UK      |            1 | London           |
+| USA     |            6 | Texas,Washington |
++---------+--------------+------------------+
+
 select 
   country,
   count(*) as total_orders,
   GROUP_CONCAT(distinct state order by state separator ' | ') as list_of_states
 from orders_data
 group by country;
+
+Output:
++---------+--------------+-----------------------+
+| country | total_orders | list_of_states        |
++---------+--------------+-----------------------+
+| INDIA   |            4 | AP | Bihar | Goa | UP |
+| UK      |            1 | London                |
+| USA     |            6 | Texas | Washington    |
++---------+--------------+-----------------------+
 
 create table payment (payment_amount decimal(8,2),
   payment_date date,
@@ -63,11 +89,31 @@ insert into payment
   (211.65, '2020.02.02',1),
   (1500.73, '2021.01.06',3);
 
--- Example for ROLLUP
 select sum(payment_amount),
   year(payment_date) as 'Payment Year',
   store_id as 'Store'
 from payment 
 group by year(payment_date), store_id with ROLLUP
-
 order by year(payment_date), store_id;
+
+Output:
++---------------------+--------------+-------+
+| sum(payment_amount) | Payment Year | Store |
++---------------------+--------------+-------+
+|            31975.73 |         NULL |  NULL |
+|             4426.08 |         2018 |  NULL |
+|             1390.22 |         2018 |     1 |
+|             3002.43 |         2018 |     2 |
+|               33.43 |         2018 |     3 |
+|             8188.35 |         2019 |  NULL |
+|              483.91 |         2019 |     1 |
+|             7704.44 |         2019 |     2 |
+|             4633.92 |         2020 |  NULL |
+|             1205.76 |         2020 |     1 |
+|             2929.14 |         2020 |     2 |
+|              499.02 |         2020 |     3 |
+|            14727.38 |         2021 |  NULL |
+|              394.93 |         2021 |     2 |
+|            14332.45 |         2021 |     3 |
++---------------------+--------------+-------+
+
